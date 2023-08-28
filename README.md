@@ -9,7 +9,7 @@ The requirements are shown below.
 ### Logic Pseudocode
 
 - ProcessLoanApplication(Request) : Response =>
-    - ValidateRequest(Request) : Result<ValidatedRequest,List<string>> =>
+    - ValidateRequest(Request) : Result<ValidatedRequest,List\<string>> =>
     - Ok validatedRequest =>
         - CalculateLoanToValueRate(LoanAmount, AssetValue) : Option<LoanToValueRate> =>
         - Some loanToValueRate =>
