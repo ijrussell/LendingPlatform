@@ -184,7 +184,7 @@ let approved = processLoanApplication { LoanAmount = Some 200_000; AssetValue = 
 
 ```
 
-## Requirements
+## Exercise Requirements
 
 Build a simple Console application using the technology of your choice (preferably C#) that enables the writing and reporting of loans as per the requirements below. This should be approached as a way that can demonstrate your process to solving problems (any required infrastructure can simply be mocked), and does not need to be built to a production standard. Instead the exercise should be timeboxed to no longer than an hour. Notes can be taken of any assumptions made, and also any other considerations or improvements that you might make if this was a production application.
 
