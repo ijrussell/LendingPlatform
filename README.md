@@ -160,20 +160,20 @@ let runRiskDecider loanAmount loanToValueRate creditScore =
     | _ -> 
         Approved
 
-let processLoanApplication request = 
-    match request |> validateRequest with
-    | Ok validated -> 
-        match calculateLoanToValueRate validated.LoanAmount validated.AssetValue with
-        | Some loanToValueRate ->
+let processLoanApplication (request:LoanApplicationRequest) : LoanApplicationResponse = 
+    result {
+        let! validated = validateRequest request 
+        let! loanToValueRate = 
+            calculateLoanToValueRate validated.LoanAmount validated.AssetValue
+            |> Result.requireSome ["Unable to calculate loan to value rate."]
+        return
             match runRiskDecider validated.LoanAmount loanToValueRate validated.CreditScore with
-            | Approved -> 
-                LoanApplicationResponse.isApproved validated loanToValueRate
-            | Declined reasons ->
-                LoanApplicationResponse.isDeclined validated loanToValueRate reasons
-        | None ->
-            LoanApplicationResponse.UnableToProcess ["Unable to calculate loan to value rate."]
-    | Error errors ->
-        LoanApplicationResponse.UnableToProcess errors
+            | Approved -> LoanApplicationResponse.isApproved validated loanToValueRate
+            | Declined reasons -> LoanApplicationResponse.isDeclined validated loanToValueRate reasons
+    }
+    |> function
+        | Ok processed -> processed
+        | Error reason -> LoanApplicationResponse.UnableToProcess reason
 
 // Simple set of checks
 let invalidLoanAmount = processLoanApplication { LoanAmount = None; AssetValue = Some 600_000; CreditScore = Some 900s }
