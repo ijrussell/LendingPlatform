@@ -7,7 +7,7 @@ var processor = new LoanApplicationProcessor(
 
 var dataStore = new LoanApplicationDataStore();
 
-var shouldContinue = true;
+bool shouldContinue;
 
 do
 {
@@ -17,53 +17,43 @@ do
         RequestUserInput("Enter Credit Score [1-999]:")
     );
     
-    Console.WriteLine("Press p to process your loan application, x to exit, and any other key to cancel this application.");
-
-    var key = Console.ReadKey().Key;
-    
-    Console.WriteLine("");
-
-    switch (key)
+    shouldContinue = AskWantTheyWantToDo() switch 
     {
-        case ConsoleKey.P:
-            switch (processor.Process(request))
-            {
-                case LoanApplicationResponse.Processed response:
-                    dataStore.Insert(response);
-
-                    DisplayLoanApplicationStatus(response);
-                    DisplayMetrics(dataStore);
-                    break;
-                case LoanApplicationResponse.UnableToProcess response:
-                    Console.WriteLine($"{response.Reason}");
-                    break;
-            }
-            shouldContinue = AskIfWeShouldContinue();
-            break;
-        case ConsoleKey.X:
-            shouldContinue = false;
-            break;
-    }
+        ConsoleKey.P => ProcessLoanApplication(processor, dataStore, request),
+        ConsoleKey.X => false, // Exit
+        _ => true // Continue
+    };
 } while (shouldContinue);
 
 Console.WriteLine("Finished");
 return;
 
+bool ProcessLoanApplication(
+    LoanApplicationProcessor loanApplicationProcessor, 
+    LoanApplicationDataStore loanApplicationDataStore,
+    LoanApplicationRequest loanApplicationRequest)
+{
+    switch (loanApplicationProcessor.Process(loanApplicationRequest))
+    {
+        case LoanApplicationResponse.Processed response:
+            loanApplicationDataStore.Insert(response);
+
+            DisplayLoanApplicationStatus(response);
+            DisplayMetrics(loanApplicationDataStore);
+            break;
+        case LoanApplicationResponse.UnableToProcess response:
+            Console.WriteLine($"{response.Reason}");
+            break;
+    }
+
+    return AskIfWeShouldContinue();
+}
+
+
 string? RequestUserInput(string message)
 {
     Console.WriteLine(message);
     return Console.ReadLine();
-}
-
-bool AskIfWeShouldContinue()
-{
-    Console.WriteLine("Press x to exit, and any other key to make another loan application.");
-            
-    var key = Console.ReadKey().Key;
-
-    Console.WriteLine("");
-        
-    return key != ConsoleKey.X;
 }
 
 LoanApplicationRequest CreateLoanApplicationRequest(string? loanAmountInput, string? assetValueInput, string? creditScoreInput)
@@ -78,6 +68,7 @@ LoanApplicationRequest CreateLoanApplicationRequest(string? loanAmountInput, str
         
     return new LoanApplicationRequest(loanAmount, assetValue, creditScore);
 }
+
 
 void DisplayLoanApplicationStatus(LoanApplicationResponse.Processed response)
 {
@@ -107,4 +98,26 @@ void DisplayMetrics(LoanApplicationDataStore store)
     {
         Console.WriteLine($"The mean LTV rate of all processed loans is {meanValue}%.");
     }
+}
+
+ConsoleKey AskWantTheyWantToDo()
+{
+    Console.WriteLine("Press p to process your loan application, x to exit, and any other key to cancel this application.");
+
+    var key = Console.ReadKey().Key;
+    
+    Console.WriteLine("");
+
+    return key;
+}
+
+bool AskIfWeShouldContinue()
+{
+    Console.WriteLine("Press x to exit, and any other key to make another loan application.");
+
+    var key = Console.ReadKey().Key;
+
+    Console.WriteLine("");
+
+    return key != ConsoleKey.X;
 }
