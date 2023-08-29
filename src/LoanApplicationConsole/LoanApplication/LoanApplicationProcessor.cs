@@ -3,7 +3,7 @@
 public readonly record struct LoanAmount(int Value);
 public readonly record struct AssetValue(int Value);
 public readonly record struct CreditScore(short Value);
-public readonly record struct LoanToValueRate(short Value);
+public readonly record struct LoanToValueRate(byte Value);
 
 public class LoanApplicationProcessor
 {
@@ -38,7 +38,7 @@ public class LoanApplicationProcessor
             return null;
         
         // Assumption: Round down (50.99 => 50)
-        return new LoanToValueRate((short)(100m * loanAmount.Value / assetValue.Value));
+        return new LoanToValueRate((byte)(100 * loanAmount.Value / assetValue.Value));
     }
 
     private static LoanApplicationResponse CreateLoanApplicationResponse(

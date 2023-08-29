@@ -23,10 +23,10 @@ public class LoanApplicationProcessorTests
     }
     
     [Theory]
-    [InlineData(100_000, 200_000, 50)]
-    [InlineData(100_000, 300_000, 33)]
-    [InlineData(123_456, 175_000, 70)]
-    public void LoanToValueRate_Calculations_ReturnRate(int loanAmount, int assetValue, short loanToValueRate)
+    [InlineData(100_000, 200_000, 50)] // 50.00
+    [InlineData(100_000, 300_000, 33)] // 33.33
+    [InlineData(123_456, 175_000, 70)] // 70.54
+    public void LoanToValueRate_Calculations_ReturnRate(int loanAmount, int assetValue, byte loanToValueRate)
     {
         var response = _processor.Process(
             new LoanApplicationRequest(loanAmount, assetValue, 999)

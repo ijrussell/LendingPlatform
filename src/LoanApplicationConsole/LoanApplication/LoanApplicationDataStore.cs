@@ -55,6 +55,6 @@ public record struct LoanApplicationData(
     int LoanAmount, 
     int AssetValue, 
     short CreditScore, 
-    short LoanToValueRate, 
+    byte LoanToValueRate, 
     string Status
 );
