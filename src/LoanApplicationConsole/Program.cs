@@ -38,14 +38,12 @@ do
                     Console.WriteLine($"{response.Reason}");
                     break;
             }
+            shouldContinue = AskIfWeShouldContinue();
             break;
         case ConsoleKey.X:
             shouldContinue = false;
             break;
     }
-    
-    shouldContinue = shouldContinue && AskIfWeShouldContinue();
-
 } while (shouldContinue);
 
 Console.WriteLine("Finished");
@@ -55,11 +53,6 @@ string? RequestUserInput(string message)
 {
     Console.WriteLine(message);
     return Console.ReadLine();
-}
-
-void DisplayLoanApplicationStatus(LoanApplicationResponse.Processed response)
-{
-    Console.WriteLine($"Your loan application was {response.Status}");
 }
 
 bool AskIfWeShouldContinue()
@@ -86,11 +79,17 @@ LoanApplicationRequest CreateLoanApplicationRequest(string? loanAmountInput, str
     return new LoanApplicationRequest(loanAmount, assetValue, creditScore);
 }
 
+void DisplayLoanApplicationStatus(LoanApplicationResponse.Processed response)
+{
+    Console.WriteLine($"Your loan application was {response.Status}");
+}
+
 void DisplayMetrics(LoanApplicationDataStore store)
 {
     DisplayCountByStatusSummary(store.SummaryCountByStatus());
     DisplayTotalLoanValue(store.ApprovedLoanTotalValue());
     DisplayMeanLoanToValue(store.MeanLoanToValueRate());
+    return;
 
     void DisplayCountByStatusSummary(ImmutableList<LoanApplicationStatusSummaryData> summary)
     {
