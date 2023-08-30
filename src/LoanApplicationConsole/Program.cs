@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using LoanApplicationConsole;
 using LoanApplicationConsole.LoanApplication;
 
 var processor = new LoanApplicationProcessor(
@@ -6,6 +7,7 @@ var processor = new LoanApplicationProcessor(
 );
 
 var dataStore = new LoanApplicationDataStore();
+var metrics = new LoanApplicationMetrics(dataStore);
 
 bool shouldContinue;
 
@@ -77,9 +79,9 @@ void DisplayLoanApplicationStatus(LoanApplicationResponse.Processed response)
 
 void DisplayMetrics(LoanApplicationDataStore store)
 {
-    DisplayCountByStatusSummary(store.SummaryCountByStatus());
-    DisplayTotalLoanValue(store.ApprovedLoanTotalValue());
-    DisplayMeanLoanToValue(store.MeanLoanToValueRate());
+    DisplayCountByStatusSummary(metrics.SummaryCountByStatus());
+    DisplayTotalLoanValue(metrics.ApprovedLoanTotalValue());
+    DisplayMeanLoanToValue(metrics.MeanLoanToValueRate());
     return;
 
     void DisplayCountByStatusSummary(ImmutableList<LoanApplicationStatusSummaryData> summary)

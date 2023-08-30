@@ -1,29 +1,20 @@
 ﻿using System.Collections.Immutable;
-using System.Collections.ObjectModel;
+using LoanApplicationConsole.LoanApplication;
 
-namespace LoanApplicationConsole.LoanApplication;
+namespace LoanApplicationConsole;
 
-public class LoanApplicationDataStore : Collection<LoanApplicationData>
+public class LoanApplicationMetrics
 {
-    public void Insert(LoanApplicationResponse response)
+    private readonly LoanApplicationDataStore _store;
+
+    public LoanApplicationMetrics(LoanApplicationDataStore store)
     {
-        switch (response)
-        {
-            case LoanApplicationResponse.Processed p:
-                Add(new LoanApplicationData(
-                    p.LoanAmount, 
-                    p.AssetValue, 
-                    p.CreditScore, 
-                    p.LoanToValueRate, 
-                    p.Status
-                ));
-                break;
-        }
+        _store = store;
     }
 
     public ImmutableList<LoanApplicationStatusSummaryData> SummaryCountByStatus()
     {
-        return Items
+        return _store.LoanApplications
             .GroupBy(item => item.Status)
             .Select(item => 
                 new LoanApplicationStatusSummaryData(item.Key, (short)item.Count())
@@ -34,14 +25,14 @@ public class LoanApplicationDataStore : Collection<LoanApplicationData>
     public int ApprovedLoanTotalValue()
     {
         var approved = new LoanApplicationStatus.Approved().ToString();
-        return Items
+        return _store.LoanApplications
             .Where(item => item.Status.Equals(approved, StringComparison.OrdinalIgnoreCase))
             .Sum(item => item.LoanAmount);
     }
 
     public short MeanLoanToValueRate()
     {
-        return (short)Items
+        return (short)_store.LoanApplications
             .Average(item => item.LoanToValueRate);
     }
 }
@@ -51,10 +42,3 @@ public record struct LoanApplicationStatusSummaryData(
     short Count
 );
 
-public record struct LoanApplicationData(
-    int LoanAmount, 
-    int AssetValue, 
-    short CreditScore, 
-    byte LoanToValueRate, 
-    string Status
-);
