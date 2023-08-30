@@ -33,7 +33,7 @@ public class LoanApplicationProcessorTests
         
         Assert.True(
             response is LoanApplicationResponse.Processed p 
-            && p.Status.Equals(Approved, StringComparison.InvariantCultureIgnoreCase)
+            && p.Status.Equals(Approved, StringComparison.OrdinalIgnoreCase)
         );
     }
 
@@ -50,7 +50,7 @@ public class LoanApplicationProcessorTests
         
         Assert.True(
             response is LoanApplicationResponse.Processed p 
-            && p.Status.Equals(Declined, StringComparison.InvariantCultureIgnoreCase)
+            && p.Status.Equals(Declined, StringComparison.OrdinalIgnoreCase)
         );
     }
 

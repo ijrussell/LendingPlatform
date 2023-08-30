@@ -9,13 +9,8 @@ public class LoanApplicationMetricsTests
     private static readonly string Declined = 
         new LoanApplicationStatus.Declined("").ToString();
 
-    private readonly LoanApplicationMetrics _metrics;
+    private readonly LoanApplicationMetrics _metrics = new(PopulateStoreWithTestData());
 
-    public LoanApplicationMetricsTests()
-    {
-        _metrics = new LoanApplicationMetrics(PopulateStoreWithTestData());
-    }
-            
     [Fact]
     public void CountByStatus()
     {
@@ -56,71 +51,74 @@ public class LoanApplicationMetricsTests
         return data.Count;
     }
 
-    private LoanApplicationDataStore PopulateStoreWithTestData()
+    private static LoanApplicationDataStore PopulateStoreWithTestData()
     {
         var store = new LoanApplicationDataStore();
-        _responses.ForEach(store.Insert);
+        Responses().ForEach(store.Insert);
         return store;
     }
 
     // 8 approved, 1 declined
     // Total approved loans: 3_700_000
     // Mean LTV of all valid applications: 50%
-    private readonly List<LoanApplicationResponse.Processed> _responses = new()
+    private static List<LoanApplicationResponse.Processed> Responses()
     {
-         new LoanApplicationResponse.Processed(
-             100_000,
-             1_000_000,
-             900,
-             10,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             200_000,
-             1_000_000,
-             900,
-             20,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             300_000,
-             1_000_000,
-             900,
-             30,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             400_000,
-             1_000_000,
-             900,
-             40,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             500_000,
-             1_000_000,
-             900,
-             50,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             600_000,
-             1_000_000,
-             900,
-             60,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             700_000,
-             1_000_000,
-             900,
-             70,
-             Approved),
-         new LoanApplicationResponse.Processed(
-             800_000,
-             1_000_000,
-             400,
-             80,
-             Declined),
-         new LoanApplicationResponse.Processed(
-             900_000,
-             1_000_000,
-             900,
-             90,
-             Approved)
-   };
+        return new List<LoanApplicationResponse.Processed>()
+        {
+            new LoanApplicationResponse.Processed(
+                100_000,
+                1_000_000,
+                900,
+                10,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                200_000,
+                1_000_000,
+                900,
+                20,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                300_000,
+                1_000_000,
+                900,
+                30,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                400_000,
+                1_000_000,
+                900,
+                40,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                500_000,
+                1_000_000,
+                900,
+                50,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                600_000,
+                1_000_000,
+                900,
+                60,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                700_000,
+                1_000_000,
+                900,
+                70,
+                Approved),
+            new LoanApplicationResponse.Processed(
+                800_000,
+                1_000_000,
+                400,
+                80,
+                Declined),
+            new LoanApplicationResponse.Processed(
+                900_000,
+                1_000_000,
+                900,
+                90,
+                Approved)
+        };
+    }
 }

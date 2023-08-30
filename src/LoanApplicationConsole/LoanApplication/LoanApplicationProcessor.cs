@@ -26,7 +26,6 @@ public class LoanApplicationProcessor
         return CreateLoanApplicationResponse(request, loanToValueRate.Value, loanApplicationStatus);
     }
 
-
     private static LoanApplicationResponse CreateLoanApplicationResponse(
         LoanApplicationRequest request,
         LoanToValueRate loanToValueRate, 
